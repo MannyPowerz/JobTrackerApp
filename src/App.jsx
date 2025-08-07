@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Sidebar from './Components/Sidebar/Sidebar.jsx';
 import Header from './Components/Header/Header.jsx';
-import JobTable from './Components/JobTable';
-import NotesModal from './Components/NotesModal/NotesModal.jsx';
-import AddJobModal from './Components/AddJobModal/AddJobModal.jsx';
-import FilterModal from './Components/FilterModal/FilterModal.jsx';
+import JobTable from './Components/JobTable/JobTable.jsx';
+// import NotesModal from './Components/NotesModal/NotesModal.jsx';
+// import AddJobModal from './Components/AddJobModal/AddJobModal.jsx';
+// import FilterModal from './Components/FilterModal/FilterModal.jsx';
 
 const App = () => {
   // TODO: Create state for jobs array using useState
@@ -22,13 +22,18 @@ const App = () => {
   // TODO: - searchTerm (string for filtering by company name)
 
   // TODO: Create state for filter functionality  
+  const [activeFilters, setActiveFilters] = useState(['Applied', 'Interviewing', 'Offer', 'Rejected']);
   // TODO: - activeFilters (array of status strings to filter by)
 
   // TODO: Create state for modal visibility
   // TODO: - showNotesModal (boolean)
-  // TODO: - showAddJobModal (boolean) 
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  // TODO: - showAddJobModal (boolean
+  const [showAddJobModal, setShowAddJobModal] = useState(false);
   // TODO: - showFilterModal (boolean)
+  const [showFilterModal, setShowFilterModal] = useState(false);
   // TODO: - selectedJob (object - currently selected job for editing)
+  const [selectedJob, setSelectedJob] = useState(null);
 
   // TODO: Create handler for opening notes modal
   // TODO: - Accept job object as parameter
@@ -48,12 +53,39 @@ const App = () => {
   // TODO: - Close the add job modal
 
   // TODO: Create handler for updating filters
-  // TODO: - Accept filters array as parameter
+  // TODO: - Accept filters array as parameter 
   // TODO: - Update activeFilters state
+  const handleFilterChange = (filters) => {
+    setActiveFilters(filters);
+  };
+
 
   // TODO: Create handler for search functionality
   // TODO: - Accept searchTerm string as parameter
   // TODO: - Update searchTerm state
+
+  // TODO: Create handler for filter click (opens filter modal)
+  // TODO: - Set showFilterModal to true
+  // TODO: - This is called when filter icon in sidebar is clicked
+  const handleClickFilterClick = () => {
+    setShowFilterModal(true);
+  };
+
+
+  // TODO: Create handler for opening add job modal
+  // TODO: - Set showAddJobModal to true
+  // TODO: - This is called when "Add Job" button is clicked
+
+  // TODO: Create handler for closing modals
+  // TODO: - Set all modal states to false (showNotesModal, showAddJobModal, showFilterModal)
+  // TODO: - Reset selectedJob to null
+  // TODO: - This can be reused for all modal close actions
+
+  // TODO: Create handler for notes submission
+  // TODO: - Accept jobId and newNotes as parameters
+  // TODO: - Update the jobs array by finding job with matching id
+  // TODO: - Update the notes property with newNotes
+  // TODO: - Close the notes modal
 
   // TODO: Create filtering logic for jobs display
   // TODO: - Filter jobs by searchTerm (company name includes search)
@@ -113,8 +145,9 @@ const App = () => {
 
   return (
     <div className="app">
-      <Sidebar 
+      <Sidebar
         // TODO: Pass filter click handler as prop
+        onFilterClick={handleClickFilterClick}
       />
       
       <div className="main-content">
@@ -125,7 +158,7 @@ const App = () => {
         />
         
         <JobTable 
-          jobs={sampleJobs} // TODO: Replace with your filtered jobs array
+          //jobs={sampleJobs} // TODO: Replace with your filtered jobs array
           // TODO: Pass notes click handler as prop
           // TODO: Pass status change handler as prop
         />
