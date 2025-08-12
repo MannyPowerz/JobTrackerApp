@@ -1,0 +1,72 @@
+.table-container {
+    background: white;
+    margin: 0;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.job-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.table-header th {
+    padding: 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 16px;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.job-row {
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+
+.job-row:hover {
+    background-color: #f8f9fa;
+}
+
+.job-row td {
+    padding: 20px;
+    font-size: 15px;
+    color: #333;
+}
+
+.status-cell {
+    position: relative;
+}
+
+.notes-cell {
+    cursor: pointer;
+    color: #5352ed;
+    transition: color 0.2s ease;
+}
+
+.notes-cell:hover {
+    color: #3742fa;
+    text-decoration: underline;
+}
+
+/* Status color classes for use in StatusDropdown */
+.status-rejected {
+    color: #ff4757;
+}
+
+.status-offer {
+    color: #2ed573;
+}
+
+.status-interviewing {
+    color: #ffa726;
+}
+
+.status-applied {
+    color: #5352ed;
+}

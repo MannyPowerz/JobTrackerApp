@@ -17,82 +17,7 @@ const App = () => {
   // TODO: - status (string - 'Applied', 'Interviewing', 'Offer', 'Rejected')
   // TODO: - applicationDate (string - MM/DD/YYYY format)
   // TODO: - notes (string - application notes)
-
-  // TODO: Create state for search functionality
-  // TODO: - searchTerm (string for filtering by company name)
-
-  // TODO: Create state for filter functionality  
-  const [activeFilters, setActiveFilters] = useState(['Applied', 'Interviewing', 'Offer', 'Rejected']);
-  // TODO: - activeFilters (array of status strings to filter by)
-
-  // TODO: Create state for modal visibility
-  // TODO: - showNotesModal (boolean)
-  const [showNotesModal, setShowNotesModal] = useState(false);
-  // TODO: - showAddJobModal (boolean
-  const [showAddJobModal, setShowAddJobModal] = useState(false);
-  // TODO: - showFilterModal (boolean)
-  const [showFilterModal, setShowFilterModal] = useState(false);
-  // TODO: - selectedJob (object - currently selected job for editing)
-  const [selectedJob, setSelectedJob] = useState(null);
-
-  // TODO: Create handler for opening notes modal
-  // TODO: - Accept job object as parameter
-  // TODO: - Set selectedJob to the clicked job
-  // TODO: - Set showNotesModal to true
-
-  // TODO: Create handler for updating job status
-  // TODO: - Accept jobId and newStatus as parameters
-  // TODO: - Update the jobs array by finding job with matching id
-  // TODO: - Change the status property to newStatus
-
-  // TODO: Create handler for adding new job
-  // TODO: - Accept newJob object as parameter
-  // TODO: - Generate new unique id
-  // TODO: - Add current date as applicationDate
-  // TODO: - Add newJob to jobs array
-  // TODO: - Close the add job modal
-
-  // TODO: Create handler for updating filters
-  // TODO: - Accept filters array as parameter 
-  // TODO: - Update activeFilters state
-  const handleFilterChange = (filters) => {
-    setActiveFilters(filters);
-  };
-
-
-  // TODO: Create handler for search functionality
-  // TODO: - Accept searchTerm string as parameter
-  // TODO: - Update searchTerm state
-
-  // TODO: Create handler for filter click (opens filter modal)
-  // TODO: - Set showFilterModal to true
-  // TODO: - This is called when filter icon in sidebar is clicked
-  const handleClickFilterClick = () => {
-    setShowFilterModal(true);
-  };
-
-
-  // TODO: Create handler for opening add job modal
-  // TODO: - Set showAddJobModal to true
-  // TODO: - This is called when "Add Job" button is clicked
-
-  // TODO: Create handler for closing modals
-  // TODO: - Set all modal states to false (showNotesModal, showAddJobModal, showFilterModal)
-  // TODO: - Reset selectedJob to null
-  // TODO: - This can be reused for all modal close actions
-
-  // TODO: Create handler for notes submission
-  // TODO: - Accept jobId and newNotes as parameters
-  // TODO: - Update the jobs array by finding job with matching id
-  // TODO: - Update the notes property with newNotes
-  // TODO: - Close the notes modal
-
-  // TODO: Create filtering logic for jobs display
-  // TODO: - Filter jobs by searchTerm (company name includes search)
-  // TODO: - Filter jobs by activeFilters (status matches selected filters)
-  // TODO: - Return filtered array to pass to JobTable
-
-  const sampleJobs = [
+    const [jobs, setJobs] =  useState([
     {
       id: 1,
       company: 'Apple',
@@ -141,7 +66,107 @@ const App = () => {
       applicationDate: '07/11/2025',
       notes: 'Email when ready to discuss compensation and start date'
     }
-  ];
+  ]);
+
+  // TODO: Create state for search functionality
+  // TODO: - searchTerm (string for filtering by company name)
+
+  // TODO: Create state for filter functionality  
+  // TODO: - activeFilters (array of status strings to filter by)
+  const [activeFilters, setActiveFilters] = useState(['Applied', 'Interviewing', 'Offer', 'Rejected']);
+
+  // TODO: Create state for modal visibility
+  // TODO: - showNotesModal (boolean)
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  // TODO: - showAddJobModal (boolean
+  const [showAddJobModal, setShowAddJobModal] = useState(false);
+  // TODO: - showFilterModal (boolean)
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  // TODO: - selectedJob (object - currently selected job for editing)
+  const [selectedJob, setSelectedJob] = useState(null);
+
+  // TODO: Create handler for opening notes modal
+  // TODO: - Accept job object as parameter
+  // TODO: - Set selectedJob to the clicked job
+  // TODO: - Set showNotesModal to true
+  const handleNotesClick = (job) => {
+    setSelectedJob(job);
+    setShowNotesModal(true);
+  };
+
+  // TODO: Create handler for updating job status
+  // TODO: - Accept jobId and newStatus as parameters
+  // TODO: - Update the jobs array by finding job with matching id
+  // TODO: - Change the status property to newStatus
+  // Updates the status of a specific job in the jobs array
+  // jobId: the id of the job to update
+  // newStatus: the new status value to set
+  const handleStatusChange = (jobId, newStatus) => {
+    setJobs(prevJobs =>
+      // Loop through all jobs in the array
+      prevJobs.map(job =>
+        // If this job's id matches the one we want to update...
+        job.id === jobId
+          // ...create a new object with all the same properties(spread operator), but update status
+          ? { ...job, status: newStatus } // Only this job's status is changed
+          // Otherwise, return the job unchanged
+          : job
+      )
+    );
+  };
+
+  // TODO: Create handler for adding new job
+  // TODO: - Accept newJob object as parameter
+  // TODO: - Generate new unique id
+  // TODO: - Add current date as applicationDate
+  // TODO: - Add newJob to jobs array
+  // TODO: - Close the add job modal
+
+  // TODO: Create handler for updating filters
+  // TODO: - Accept filters array as parameter 
+  // TODO: - Update activeFilters state
+  const handleFilterChange = (filters) => {
+    setActiveFilters(filters);
+  };
+
+
+  // TODO: Create handler for search functionality
+  // TODO: - Accept searchTerm string as parameter
+  // TODO: - Update searchTerm state
+  const [searchTerm, setSearchTerm] = useState('');
+
+
+  // TODO: Create handler for filter click (opens filter modal)
+  // TODO: - Set showFilterModal to true
+  // TODO: - This is called when filter icon in sidebar is clicked
+  const handleClickFilterClick = () => {
+    setShowFilterModal(true);
+  };
+
+
+  // TODO: Create handler for opening add job modal
+  // TODO: - Set showAddJobModal to true
+  // TODO: - This is called when "Add Job" button is clicked
+  const handleAddJobClick = () => {
+    setShowAddJobModal(true);
+  };
+  // TODO: Create handler for closing modals
+  // TODO: - Set all modal states to false (showNotesModal, showAddJobModal, showFilterModal)
+  // TODO: - Reset selectedJob to null
+  // TODO: - This can be reused for all modal close actions
+
+  // TODO: Create handler for notes submission
+  // TODO: - Accept jobId and newNotes as parameters
+  // TODO: - Update the jobs array by finding job with matching id
+  // TODO: - Update the notes property with newNotes
+  // TODO: - Close the notes modal
+
+  // TODO: Create filtering logic for jobs display
+  // TODO: - Filter jobs by searchTerm (company name includes search)
+  // TODO: - Filter jobs by activeFilters (status matches selected filters)
+  // TODO: - Return filtered array to pass to JobTable
+
+
 
   return (
     <div className="app">
@@ -152,15 +177,21 @@ const App = () => {
       
       <div className="main-content">
         <Header 
-          // TODO: Pass searchTerm state as prop
-          // TODO: Pass search change handler as prop
+          // TODO: Pass searchTerm state as prop (note the difference in prop name and state name)
+          searchTerm={searchTerm}
+          // TODO: Pass search change handler as prop (note change depending on paramter for setSearchTerm depding on value change in child component)
+          onSearchChange={(term) => setSearchTerm(term)}
           // TODO: Pass add job click handler as prop
+          addOnClick={handleAddJobClick}
         />
         
         <JobTable 
-          //jobs={sampleJobs} // TODO: Replace with your filtered jobs array
-          // TODO: Pass notes click handler as prop
+          // TODO: Replace with your filtered jobs array
+          jobs={jobs}
           // TODO: Pass status change handler as prop
+          onStatusChange={handleStatusChange}
+          // TODO: Pass notes click handler as prop
+          onNotesClick={handleNotesClick}
         />
       </div>
 

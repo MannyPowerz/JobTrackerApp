@@ -1,0 +1,100 @@
+.header {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    padding: 12px 20px;
+    width: 400px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 16px;
+    background: transparent;
+    color: #333;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.search-icon {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f39c12;
+    border-radius: 50%;
+    margin-left: 10px;
+    position: relative;
+}
+
+.search-icon::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 8px;
+    background: #f39c12;
+    transform: rotate(45deg);
+    top: 15px;
+    left: 15px;
+}
+
+.add-job-btn {
+    background: linear-gradient(135deg, #2d1b69 0%, #11998e 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(45, 27, 105, 0.3);
+}
+
+.add-job-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45, 27, 105, 0.4);
+}
+
+.add-icon {
+    width: 20px;
+    height: 20px;
+    border: 2px solid white;
+    border-radius: 50%;
+    position: relative;
+}
+
+.add-icon::before,
+.add-icon::after {
+    content: '';
+    position: absolute;
+    background: white;
+}
+
+.add-icon::before {
+    width: 2px;
+    height: 12px;
+    top: 2px;
+    left: 7px;
+}
+
+.add-icon::after {
+    width: 12px;
+    height: 2px;
+    top: 7px;
+    left: 2px;
+}
