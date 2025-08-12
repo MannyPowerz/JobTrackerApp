@@ -3,7 +3,6 @@ import './status-dropdown.css';
 
 const StatusDropdown = ({ job, onStatusChange }) => {
   // TODO: Create state for dropdown open/close using useState
-    const [isOpen,setIsOpen] = React.useState(false);
   // TODO: Initialize as false (closed)
     const [dropdownIsOpen, setDropdownIsOpen] = React.useState(false);
 
@@ -48,29 +47,44 @@ const StatusDropdown = ({ job, onStatusChange }) => {
 
     return (
         <div className="dropdown-container">
-        <button
+          <button
             className={`dropdown-toggle ${getStatusClass(job.status)}`}
             style={{ 
                 color: getStatusColor(job.status),
                 fontWeight: '600'
             }}
             // TODO: Add onClick event to toggle dropdown open/close state
-            onClick={() => setIsOpen(!isOpen)}
-        >
-            {job.status}
-        </button>
+            onClick={() => setDropdownIsOpen(!dropdownIsOpen)}
+          >
+              {job.status}
+          </button>
+
+          {dropdownIsOpen && (
+          <div className="dropdown-menu">
+            {statusOptions.map(status => (
+              <div
+                key={status}
+                className="dropdown-item"
+                style={{ color: getStatusColor(status) }}
+                onClick={() => {
+                  // Calls onStatusChange with job.id and status
+                  // This triggers handleStatusChange(jobId, newStatus) in App.jsx
+                  // job.id is passed as jobId, status as newStatus
+                  // Result: Only the selected job's status is updated in parent state
+                  onStatusChange && onStatusChange(job.id, status);
+                  setDropdownIsOpen(false);
+                }}
+              >
+                {status}
+              </div>
+            ))}
+          </div>
+        )} 
         
-        {/* TODO: Conditionally render dropdown menu based on isOpen state */}
+  
+        {/* TODO: Conditionally render dropdown menu based on setDropdownIsOpen state */}
         {/* TODO: Map through status options and create clickable items */}
-        {/* TODO: Each item should call onStatusChange with job.id and selected status */}
-        {isOpen && (
-            <div className="dropdown-menu">
-                {statusOptions.map((status) => (
-                    <div 
-                        key={status}
-                        className={`dropdown-item ${getStatusClass(status)}`}
-                        style={{ color: getStatusColor(status) }}
-                    > 
+        {/* TODO: Each item should call onStatusChange with job.id and selected status 
 
         {/* TODO: Each item should close dropdown after selection */}
         {/* TODO: Apply appropriate color styling to each option */}

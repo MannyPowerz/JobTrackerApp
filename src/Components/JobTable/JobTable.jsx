@@ -2,6 +2,8 @@
 import React from 'react';
 import './job-table.css';
 import StatusDropdown from '../StatusDropdown/StatusDropdown.jsx';
+// import NotesModal from '../NotesModal/NotesModal.jsx';
+
 
 const JobTable = ({ jobs, onNotesClick, onStatusChange }) => {
   // TODO: Create helper function to truncate long notes
@@ -35,7 +37,18 @@ const JobTable = ({ jobs, onNotesClick, onStatusChange }) => {
                         'job' (prop) here refers to a single job object, not the whole jobs array.
                         This allows StatusDropdown to display and update the status for only this job.
                     */}
-                        <StatusDropdown 
+                    {/*
+                        onStatusChange is passed from App.jsx as handleStatusChange.
+                        When StatusDropdown calls onStatusChange(job.id, status),
+                        it triggers handleStatusChange(jobId, newStatus) in App.jsx.
+                        job.id (from this row) becomes jobId, and status becomes newStatus.
+                        This updates only the status of the selected job in the parent state.
+                    */}
+                    {/* 
+                    onStatusChange is important here because it allows each job row to update its status.
+                    This function is passed from the parent and lets JobTable communicate status changes back up.
+                     */}
+                    <StatusDropdown 
                         job={job} // Passes the single job object for this row
                         onStatusChange={onStatusChange} // Handler to update status for this job
                     />
