@@ -2,10 +2,11 @@ import React from 'react';
 import './sidebar.css';
 import filterIcon from '/images/filter-icon.png';
 
+
 const Sidebar = ({ onFilterClick }) => {
     return (
         <div className="sidebar">
-            <div 
+            <button 
                 className="filter-icon"
                 title="Filter Jobs"
                 // TODO: Add onClick event that calls onFilterClick handler
@@ -15,7 +16,7 @@ const Sidebar = ({ onFilterClick }) => {
                 <img src={filterIcon} 
                 alt="Filter Icon"/>  
 
-            </div>
+            </button>
         </div>
     );
 };
