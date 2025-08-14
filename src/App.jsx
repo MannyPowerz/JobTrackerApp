@@ -3,6 +3,7 @@ import './App.css';
 import Sidebar from './Components/Sidebar/Sidebar.jsx';
 import Header from './Components/Header/Header.jsx';
 import JobTable from './Components/JobTable/JobTable.jsx';
+import FilterModal from './Components/FilterModal/FilterModal.jsx';
 // import NotesModal from './Components/NotesModal/NotesModal.jsx';
 // import AddJobModal from './Components/AddJobModal/AddJobModal.jsx';
 // import FilterModal from './Components/FilterModal/FilterModal.jsx';
@@ -182,7 +183,7 @@ const App = () => {
           // TODO: Pass search change handler as prop (note change depending on paramter for setSearchTerm depding on value change in child component)
           onSearchChange={(term) => setSearchTerm(term)}
           // TODO: Pass add job click handler as prop
-          addOnClick={handleAddJobClick}
+          onAddJobClick={handleAddJobClick}
         />
         
         <JobTable 
@@ -203,6 +204,13 @@ const App = () => {
 
       {/* TODO: Conditionally render FilterModal when showFilterModal is true */}
       {/* TODO: Pass activeFilters, close handler, and filters change handler as props */}
+      {showFilterModal && (
+        <FilterModal
+          onClose={() => setShowFilterModal(false)}
+          activeFilters={activeFilters}
+          onFiltersChange={handleFilterChange}
+        />
+      )}
     </div>
   );
 };
