@@ -1,8 +1,7 @@
-// components/JobTable.js
 import React from 'react';
 import './job-table.css';
 import StatusDropdown from '../StatusDropdown/StatusDropdown.jsx';
-// import NotesModal from '../NotesModal/NotesModal.jsx';
+import NotesModal from '../NotesModal/NotesModal.jsx';
 
 
 const JobTable = ({ jobs, onNotesClick, onStatusChange }) => {

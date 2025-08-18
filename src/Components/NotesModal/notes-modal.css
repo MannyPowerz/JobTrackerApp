@@ -1,0 +1,10 @@
+.notes-modal .modal-title {
+    /* Add any notes modal specific styling here */
+    font-size: 18px;
+    line-height: 1.4;
+}
+
+.notes-modal .form-textarea {
+    /* Notes modal specific textarea styling */
+    min-height: 150px;
+}
