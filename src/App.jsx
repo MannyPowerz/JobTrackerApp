@@ -4,9 +4,8 @@ import Sidebar from './Components/Sidebar/Sidebar.jsx';
 import Header from './Components/Header/Header.jsx';
 import JobTable from './Components/JobTable/JobTable.jsx';
 import FilterModal from './Components/FilterModal/FilterModal.jsx';
-// import NotesModal from './Components/NotesModal/NotesModal.jsx';
+import NotesModal from './Components/NotesModal/NotesModal.jsx';
 // import AddJobModal from './Components/AddJobModal/AddJobModal.jsx';
-// import FilterModal from './Components/FilterModal/FilterModal.jsx';
 
 const App = () => {
   // TODO: Create state for jobs array using useState
@@ -79,12 +78,13 @@ const App = () => {
   // TODO: Create state for modal visibility
   // TODO: - showNotesModal (boolean)
   const [showNotesModal, setShowNotesModal] = useState(false);
+    // TODO: - selectedJob (object - currently selected job for editing)
+  const [selectedJob, setSelectedJob] = useState(null);
+
   // TODO: - showAddJobModal (boolean
   const [showAddJobModal, setShowAddJobModal] = useState(false);
   // TODO: - showFilterModal (boolean)
   const [showFilterModal, setShowFilterModal] = useState(false);
-  // TODO: - selectedJob (object - currently selected job for editing)
-  const [selectedJob, setSelectedJob] = useState(null);
 
   // TODO: Create handler for opening notes modal
   // TODO: - Accept job object as parameter
@@ -161,10 +161,30 @@ const App = () => {
   // TODO: - Update the jobs array by finding job with matching id
   // TODO: - Update the notes property with newNotes
   // TODO: - Close the notes modal
+  const handleNotesSubmit = (jobId, newNotes) => { 
+    setJobs(prevJobs => 
+      prevJobs.map(job => 
+        // If this job's id matches the one we want to update...
+        // notes is updated with newNotes
+        job.id === jobId ? { ...job, notes: newNotes } : job
+      )
+    )
+    setShowNotesModal(false);
+  };
 
   // TODO: Create filtering logic for jobs display
   // TODO: - Filter jobs by searchTerm (company name includes search)
   // TODO: - Filter jobs by activeFilters (status matches selected filters)
+  const filteredJobs = jobs.filter(job => {
+    // Filter by search term
+    const matchesSearch = job.company.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Filter by active filters
+    const matchesFilter = activeFilters.includes(job.status);
+    
+    // Return true if both conditions are met
+    return matchesSearch && matchesFilter;
+  });
   // TODO: - Return filtered array to pass to JobTable
 
 
@@ -188,7 +208,7 @@ const App = () => {
         
         <JobTable 
           // TODO: Replace with your filtered jobs array
-          jobs={jobs}
+          jobs={filteredJobs}
           // TODO: Pass status change handler as prop
           onStatusChange={handleStatusChange}
           // TODO: Pass notes click handler as prop
@@ -198,6 +218,13 @@ const App = () => {
 
       {/* TODO: Conditionally render NotesModal when showNotesModal is true */}
       {/* TODO: Pass selectedJob, close handler, and submit handler as props */}
+      {showNotesModal && selectedJob && (
+        <NotesModal
+          job={selectedJob}
+          onClose={() => setShowNotesModal(false)}
+          onSubmit={handleNotesSubmit}
+        />
+      )}
 
       {/* TODO: Conditionally render AddJobModal when showAddJobModal is true */}
       {/* TODO: Pass close handler and submit handler as props */}
