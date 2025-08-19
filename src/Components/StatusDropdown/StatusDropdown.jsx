@@ -6,9 +6,12 @@ const StatusDropdown = ({ job, onStatusChange }) => {
   // TODO: Initialize as false (closed)
     const [dropdownIsOpen, setDropdownIsOpen] = React.useState(false);
 
+
   // TODO: Create array of available status options
   // TODO: Include: 'Applied', 'Interviewing', 'Offer', 'Rejected'
     const statusOptions = ['Applied', 'Interviewing', 'Offer', 'Rejected'];
+
+
 
   // TODO: Create function to get color for each status
   // TODO: Return '#ff4757' for 'Rejected'

@@ -10,6 +10,9 @@
 .main-content {
   flex: 1;
   padding: 0;
+  /* ADDED: Ensure dropdowns can appear above main content */
+  position: relative;
+  overflow: visible;
 }
 
 /* Global Modal Styles - Used by FilterModal and other modals */
@@ -36,6 +39,8 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   position: relative;
   animation: modalSlideIn 0.3s ease;
+  /* UPDATED: Ensure modals appear above dropdowns */
+  z-index: 1001;
 }
 
 @keyframes modalSlideIn {

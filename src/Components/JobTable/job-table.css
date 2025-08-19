@@ -1,9 +1,13 @@
+/* components/JobTable.css - Fixed to allow dropdown overflow */
+
 .table-container {
     background: white;
     margin: 0;
     border-radius: 0;
-    overflow: hidden;
+    /* REMOVED: overflow: hidden - this was clipping the dropdown */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    /* ADDED: Ensure dropdowns can extend beyond table */
+    position: relative;
 }
 
 .job-table {
@@ -27,6 +31,8 @@
 .job-row {
     border-bottom: 1px solid #eee;
     transition: background-color 0.2s ease;
+    /* ADDED: Ensure row content can overflow for dropdowns */
+    position: relative;
 }
 
 .job-row:hover {
@@ -41,6 +47,8 @@
 
 .status-cell {
     position: relative;
+    /* ADDED: Ensure dropdown can extend beyond cell boundaries */
+    overflow: visible;
 }
 
 .notes-cell {
