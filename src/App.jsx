@@ -5,6 +5,7 @@ import Header from './Components/Header/Header.jsx';
 import JobTable from './Components/JobTable/JobTable.jsx';
 import FilterModal from './Components/FilterModal/FilterModal.jsx';
 import NotesModal from './Components/NotesModal/NotesModal.jsx';
+import AddJobModal from './Components/AddJobModal/AddJobModal.jsx';
 // import AddJobModal from './Components/AddJobModal/AddJobModal.jsx';
 
 const App = () => {
@@ -228,6 +229,22 @@ const App = () => {
 
       {/* TODO: Conditionally render AddJobModal when showAddJobModal is true */}
       {/* TODO: Pass close handler and submit handler as props */}
+      {showAddJobModal && (
+        <AddJobModal
+          onClose={() => setShowAddJobModal(false)}
+          onSubmit={(newJob) => {
+            // Generate a new unique id for the job
+            const newJobWithId = {
+              ...newJob,
+              id: jobs.length + 1, // Simple id generation based on current length
+              applicationDate: new Date().toLocaleDateString('en-US') // Current date in MM/DD/YYYY format
+            };
+            setJobs([...jobs, newJobWithId]); // Add the new job to the jobs array
+            setShowAddJobModal(false); // Close the modal after adding
+          }}
+        
+        />
+      )} 
 
       {/* TODO: Conditionally render FilterModal when showFilterModal is true */}
       {/* TODO: Pass activeFilters, close handler, and filters change handler as props */}

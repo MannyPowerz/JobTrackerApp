@@ -1,0 +1,10 @@
+/* Optional: Component-specific overrides */
+.add-job-modal .modal {
+    /* Add job modal specific sizing if needed */
+    max-width: 550px;
+}
+
+.add-job-modal .form-group {
+    /* Consistent spacing for add job form */
+    margin-bottom: 22px;
+}
