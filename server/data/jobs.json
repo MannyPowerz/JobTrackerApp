@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "title": "Software Developer",
+    "company": "Tech Corp",
+    "location": "Remote",
+    "salary": "$80,000"
+  },
+  {
+    "id": 2,
+    "title": "Data Analyst",
+    "company": "Data Inc",
+    "location": "New York",
+    "salary": "$65,000"
+  }
+]
