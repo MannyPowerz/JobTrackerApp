@@ -12,5 +12,13 @@
     "company": "Data Inc",
     "location": "New York",
     "salary": "$65,000"
+  },
+  {
+    "company": "Tech Innovators Inc.",
+    "jobTitle": "Junior Developer",
+    "status": "Applied",
+    "notes": "Met at career fair.",
+    "id": "mf1l8iis2ni0ipn982w",
+    "applicationDate": "09/01/2025"
   }
 ]
