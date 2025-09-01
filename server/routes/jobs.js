@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
     try {
         const newJob = req.body;
         
-        const requiredFields = ['company', 'jobTitle', 'status'];
+        const requiredFields = ['company', 'jobTitle', 'status', 'notes'];
         
         // Validate that all required fields are present and not empty. 
         for (const field of requiredFields) {
@@ -69,6 +69,47 @@ router.post('/', async (req, res) => {
         res.status(500).json({ error: 'Failed to add new job' });
     }
 });
+
+router.patch('/:id', async (req, res) => {
+    try {
+        const jobId = req.params.id;
+        const updates = req.body;
+        const jobs = await readJobsFile();
+        // find the index of the job to update
+        const jobIndex = jobs.findIndex(job => job.id === jobId);
+        // If the job is not found, return a 404 error
+        if (jobIndex === -1) {
+            return res.status(404).json({ error: 'Job not found' });
+        }
+        // Get the job object to update
+        const jobToUpdate = jobs[jobIndex];
+        // Only allow updates to specific fields
+        const allowedUpdates = ['company', 'jobTitle', 'status', 'notes'];
+        // Iterate over the keys in the updates object
+        // key represents each field that the client wants to update
+        for (const key of Object.keys(updates)) {
+            // Check if the key is in the list of allowed updates
+            if (allowedUpdates.includes(key)) {
+                // If the key is 'status', validate its value
+                // This ensures that the status remains one of the predefined valid options
+                // If the value of status does not match one of the allowed statuses, return a 400 error
+                if (key === 'status' && !allowedStatuses.includes(updates[key])) {
+                    return res.status(400).json({ error: `Invalid status provided. Must be one of: ${allowedStatuses.join(', ')}` });
+                }
+                // Update the job's field with the new value from the updates object
+                // gettimg the value from updates[key] and assigning it to jobToUpdate[key] changing and updating the job object in memory
+                jobToUpdate[key] = updates[key];
+            }
+        }
+        // Save the updated job back to the jobs array by indicating its index within the array
+        jobs[jobIndex] = jobToUpdate;
+        await writeJobsFile(jobs);
+        res.status(200).json({ success: true, message: 'Job updated successfully', data: jobToUpdate });
+    } catch (error) {
+        console.error('Error updating job:', error);
+        res.status(500).json({ error: 'Failed to update job' });
+    }
+});   
 
 
 module.exports = router;  
