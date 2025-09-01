@@ -24,6 +24,7 @@ app.get('/api/test', (req, res) => {
     res.json({ message: 'API is working!' });
 });
 
+
 app.listen(PORT, (error) => {
     if (error) {
         console.error('Error starting server:', error);
