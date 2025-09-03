@@ -120,5 +120,33 @@ router.patch('/:id', async (req, res) => {
     }
 });   
 
+router.delete('/:id', async (req, res) => {
+    try {
+        // Extract Job ID from URL parameters
+        const jobId = req.params.id;
+        // Load Current Data from jobs.json
+        const jobs = await readJobsFile();
+        // Find the index of the job to delete
+        const jobIndex = jobs.findIndex(job => job.id === jobId);
+        // If the job is not found, return a 404 error to see if job exists
+        if (jobIndex === -1) {
+            return res.status(404).json({ error: 'Job not found' });
+        }
+        // Remove the 1 at the specifed index job from the array
+        jobs.splice(jobIndex, 1);
+        // Save the updated jobs array back to jobs.json
+        await writeJobsFile(jobs);
+        // Respond with a success message
+        res.status(200).json({ success: true, message: 'Job deleted successfully' });
+    } catch (error) {
+        // Log the error for debugging purposes
+        console.error('Error deleting job:', error);
+        // Respond with a 500 Internal Server Error if something goes wrong
+        res.status(500).json({ error: 'Failed to delete job' });
+    }
+});
+
+
+
 
 module.exports = router;  
