@@ -1,11 +1,11 @@
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 const path = require('path');
 
 const envPath = path.join(__dirname, '/.env');
 
 dotenv.config({ path: envPath });
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT;
 
 const express = require('express');
 const cors = require('cors');
