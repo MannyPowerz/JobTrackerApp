@@ -1,26 +1,30 @@
 const dotenv = require('dotenv');
 const path = require('path');
+const config = require('./config/config')
 
 const envPath = path.join(__dirname, '/.env');
 
 dotenv.config({ path: envPath });
 
-const PORT = process.env.PORT;
+const PORT = config.server.port;
 
 const express = require('express');
 const cors = require('cors');
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: config.cors.origin,
+    credentials: config.cors.credentials
+}));
 
 // Import the jobs router
 const jobsRouter = require('./routes/jobs');                
 // Routes like GET /api/jobs
-app.use('/api/jobs', jobsRouter);                           
+app.use(`${config.api.prefix}/jobs`, jobsRouter);                           
 
 
-app.get('/api/test', (req, res) => {
+app.get(`${config.api.prefix}/test`, (req, res) => {
     res.json({ message: 'API is working!' });
 });
 

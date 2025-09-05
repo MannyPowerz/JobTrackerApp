@@ -1,6 +1,8 @@
 const { readJobsFile, writeJobsFile } = require('../data/dataHelpers.js');
 
-const allowedStatuses = ['Applied', 'Interviewing', 'Offer', 'Rejected'];
+const config = require('../config/config');
+
+const allowedStatuses = config.jobs.allowedStatuses;
 
 const getAllJobs = async (req, res) => {
     try {
@@ -103,7 +105,7 @@ const updateJob = async (req, res) => {
         const jobToUpdate = jobs[jobIndex];
 
         // Only allow updates to specific fields
-        const allowedUpdates = ['company', 'jobTitle', 'status', 'notes'];
+        const allowedUpdates = config.jobs.requiredFields;
     
         // Iterate over the keys in the updates object
         // key represents each field that the client wants to update

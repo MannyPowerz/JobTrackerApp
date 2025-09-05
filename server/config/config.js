@@ -14,7 +14,7 @@ const config = {
     // API configuration
     ,api : {
         prefix: '/api',
-        version: 'v1'
+        version: '/v1'
     }
     // File paths
     ,data : {
