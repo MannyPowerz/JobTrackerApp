@@ -16,17 +16,9 @@ const getAllJobs = async (req, res) => {
 
 const getJobById = async (req, res) => {
     try {
-        // Extract Job ID from URL parameters
-        const jobId = req.params.id;
-        // Load Current Data from jobs.json
-        const jobs = await readJobsFile();
-        // Find the index of the job to delete
-        const job = jobs.find(job => job.id === jobId);
-        // If the job is not found, return a 404 error to see if job exists
-        if (!job) {
-            return res.status(404).json({error: 'Job not found'});
-        }
-        res.status(200).json({success: true, data: job})
+    // The job was already found by the middleware and attached to the request.
+    const job = req.job;
+    res.status(200).json({ success: true, data: job });
     } catch (error) {
         console.error('Error fetching job:', error);
         res.status(500).json({error: 'Failed to fetch job'})
@@ -37,22 +29,6 @@ const createJob = async (req, res) => {
     try {
         const newJob = req.body;
         
-        const requiredFields = ['company', 'jobTitle', 'status', 'notes'];
-        
-        // Validate that all required fields are present and not empty. 
-        for (const field of requiredFields) {
-            // Check if the field is missing OR if it's an empty string.
-                // This prevents adding jobs with incomplete data.
-            if (!newJob[field] || newJob[field].trim() === '') {
-                // If a field is invalid, return a 400 Bad Request error immediately.
-                return res.status(400).json({ error: `Missing or invalid required field: '${field}'` });
-            }
-        }
-
-        if (!allowedStatuses.includes(newJob.status)) {
-            return res.status(400).json({ error: `Invalid status provided. Must be one of: ${allowedStatuses.join(', ')}` });
-        }
-
         // Get the current date object
         const today = new Date();
 
@@ -68,7 +44,7 @@ const createJob = async (req, res) => {
         // Generate a simple unique ID for the new job
 
         const uid = function(){
-        return Date.now().toString(36) + Math.random().toString(36).slice(2);
+            return Date.now().toString(36) + Math.random().toString(36).slice(2);
         }
 
         newJob.id = uid();
@@ -96,35 +72,11 @@ const updateJob = async (req, res) => {
         // find the index of the job to update
         const jobIndex = jobs.findIndex(job => job.id === jobId);
 
-        // If the job is not found, return a 404 error
-        if (jobIndex === -1) {
-            return res.status(404).json({ error: 'Job not found' });
-        }
-
         // Get the job object to update
         const jobToUpdate = jobs[jobIndex];
 
-        // Only allow updates to specific fields
-        const allowedUpdates = config.jobs.requiredFields;
-    
-        // Iterate over the keys in the updates object
-        // key represents each field that the client wants to update
         for (const key of Object.keys(updates)) {
-
-            // Check if the key is in the list of allowed updates
-            if (allowedUpdates.includes(key)) {
-
-                // If the key is 'status', validate its value
-                // This ensures that the status remains one of the predefined valid options
-                // If the value of status does not match one of the allowed statuses, return a 400 error
-                if (key === 'status' && !allowedStatuses.includes(updates[key])) {
-                    return res.status(400).json({ error: `Invalid status provided. Must be one of: ${allowedStatuses.join(', ')}` });
-                }
-
-                // Update the job's field with the new value from the updates object
-                // gettimg the value from updates[key] and assigning it to jobToUpdate[key] changing and updating the job object in memory
-                jobToUpdate[key] = updates[key];
-            }
+            jobToUpdate[key] = updates[key];
         }
         
         // Save the updated job back to the jobs array by indicating its index within the array

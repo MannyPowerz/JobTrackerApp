@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 const path = require('path');
 const config = require('./config/config')
+const {notFound, errorHandler} = require('./middleware/errorHandler.js')
 
 const envPath = path.join(__dirname, '/.env');
 
@@ -28,6 +29,9 @@ app.get(`${config.api.prefix}/test`, (req, res) => {
     res.json({ message: 'API is working!' });
 });
 
+app.use(notFound);
+
+app.use(errorHandler);
 
 app.listen(PORT, (error) => {
     if (error) {
