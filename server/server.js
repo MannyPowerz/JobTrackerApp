@@ -3,6 +3,9 @@ const path = require('path');
 const config = require('./config/config')
 const {notFound, errorHandler} = require('./middleware/errorHandler.js')
 
+
+
+
 const envPath = path.join(__dirname, '/.env');
 
 dotenv.config({ path: envPath });
@@ -14,9 +17,13 @@ const cors = require('cors');
 const app = express();
 
 app.use(express.json());
+// app.use(cors({
+//     origin: config.cors.origin,
+//     credentials: config.cors.credentials
+// }));
 app.use(cors({
-    origin: config.cors.origin,
-    credentials: config.cors.credentials
+    origin: true,  // Allow all origins during development
+    credentials: true
 }));
 
 // Import the jobs router

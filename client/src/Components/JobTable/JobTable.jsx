@@ -3,8 +3,7 @@ import './job-table.css';
 import StatusDropdown from '../StatusDropdown/StatusDropdown.jsx';
 import NotesModal from '../NotesModal/NotesModal.jsx';
 
-
-const JobTable = ({ jobs, onNotesClick, onStatusChange }) => {
+const JobTable = ({ jobs, onNotesClick, onStatusChange, onDeleteJob }) => {
   // TODO: Create helper function to truncate long notes
   // TODO: Accept notes string and maxLength number as parameters
   // TODO: If notes length > maxLength, return substring + "..."
@@ -23,6 +22,7 @@ const JobTable = ({ jobs, onNotesClick, onStatusChange }) => {
                         <th>Status</th>
                         <th>Application Date</th>
                         <th>Notes</th>
+                        <th>Actions</th> {/* TODO: New column for delete action */}
                     </tr>
                 </thead>
                 <tbody>
@@ -43,23 +43,35 @@ const JobTable = ({ jobs, onNotesClick, onStatusChange }) => {
                         job.id (from this row) becomes jobId, and status becomes newStatus.
                         This updates only the status of the selected job in the parent state.
                     */}
-                    {/* 
+                    {/*
                     onStatusChange is important here because it allows each job row to update its status.
                     This function is passed from the parent and lets JobTable communicate status changes back up.
                      */}
-                    <StatusDropdown 
+                    <StatusDropdown
                         job={job} // Passes the single job object for this row
                         onStatusChange={onStatusChange} // Handler to update status for this job
                     />
                     </td>
                     <td>{job.applicationDate}</td>
-                    <td 
+                    <td
                         className="notes-cell"
                         // TODO: Add onClick event that calls onNotesClick with job object
                         onClick={() => onNotesClick(job)}
                         // TODO: Should open notes modal for editing this job's notes
                     >
                         {truncateNotes(job.notes)}
+                    </td>
+                    <td className="actions-cell">
+                        {/* TODO: Add delete button that calls onDeleteJob with job.id */}
+                        {/* TODO: Should show confirmation before deleting */}
+                        <button
+                            className="delete-btn"
+                            onClick={() => onDeleteJob(job.id)}
+                            title="Delete job application"
+                            aria-label={`Delete ${job.company} ${job.jobTitle} application`}
+                        >
+                            🗑️
+                        </button>
                     </td>
                     </tr>
                 ))}

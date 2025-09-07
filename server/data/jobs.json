@@ -14,19 +14,19 @@
     "salary": "$65,000"
   },
   {
-    "company": "Tech Innovators Inc.",
-    "jobTitle": "Junior Developer",
-    "status": "Applied",
-    "notes": "Met at career fair.",
-    "id": "mf1l8iis2ni0ipn982w",
-    "applicationDate": "09/01/2025"
-  },
-  {
     "company": "Google",
     "jobTitle": "Software Engineer",
     "status": "Applied",
     "notes": "Applied through their careers page",
     "id": "mf5jxaf5s5944tn9hkl",
     "applicationDate": "09/04/2025"
+  },
+  {
+    "company": "Amazon",
+    "jobTitle": "AI Engineer",
+    "status": "Applied",
+    "notes": "Learning more about what the company is superically known  about",
+    "id": "mfa1g1edql5qheaow9n",
+    "applicationDate": "09/07/2025"
   }
 ]

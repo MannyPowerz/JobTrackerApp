@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+
 import Sidebar from './Components/Sidebar/Sidebar.jsx';
 import Header from './Components/Header/Header.jsx';
 import JobTable from './Components/JobTable/JobTable.jsx';
 import FilterModal from './Components/FilterModal/FilterModal.jsx';
 import NotesModal from './Components/NotesModal/NotesModal.jsx';
 import AddJobModal from './Components/AddJobModal/AddJobModal.jsx';
-// import AddJobModal from './Components/AddJobModal/AddJobModal.jsx';
+
+// Backend API base URL - matches your existing backend configuration
+const API_BASE_URL = 'http://localhost:3001/api';  // Development URL matching your backend PORT=3001
 
 const App = () => {
   // TODO: Create state for jobs array using useState
@@ -18,59 +21,19 @@ const App = () => {
   // TODO: - status (string - 'Applied', 'Interviewing', 'Offer', 'Rejected')
   // TODO: - applicationDate (string - MM/DD/YYYY format)
   // TODO: - notes (string - application notes)
-    const [jobs, setJobs] =  useState([
-    {
-      id: 1,
-      company: 'Apple',
-      jobTitle: 'Software Developer',
-      status: 'Rejected',
-      applicationDate: '07/03/2025',
-      notes: 'Improve on OA coding skills and system design preparation'
-    },
-    {
-      id: 2,
-      company: 'Amazon',
-      jobTitle: 'Software Developer',
-      status: 'Applied',
-      applicationDate: '07/05/2025',
-      notes: 'Practice More Leetcode problems, especially dynamic programming'
-    },
-    {
-      id: 3,
-      company: 'Alphabet',
-      jobTitle: 'Software Developer',
-      status: 'Interviewing',
-      applicationDate: '07/16/2025',
-      notes: 'Try Looking at their recent projects and company culture'
-    },
-    {
-      id: 4,
-      company: 'Meta',
-      jobTitle: 'Software Developer',
-      status: 'Rejected',
-      applicationDate: '07/08/2025',
-      notes: 'Understand Product sense questions better for next time'
-    },
-    {
-      id: 5,
-      company: 'Nvidia',
-      jobTitle: 'Software Developer',
-      status: 'Rejected',
-      applicationDate: '07/02/2025',
-      notes: 'Be more likeable in behavioral interviews'
-    },
-    {
-      id: 6,
-      company: 'Netflix',
-      jobTitle: 'Software Developer',
-      status: 'Offer',
-      applicationDate: '07/11/2025',
-      notes: 'Email when ready to discuss compensation and start date'
-    }
-  ]);
+
+  // State for jobs array - now populated from your backend API instead of sample data
+  const [jobs, setJobs] = useState([]);
+  
+  // Loading state to show when API calls are in progress
+  const [loading, setLoading] = useState(true);
+  
+  // Error state to handle and display API errors
+  const [error, setError] = useState(null);
 
   // TODO: Create state for search functionality
   // TODO: - searchTerm (string for filtering by company name)
+  const [searchTerm, setSearchTerm] = useState('');
 
   // TODO: Create state for filter functionality  
   // TODO: - activeFilters (array of status strings to filter by)
@@ -87,6 +50,185 @@ const App = () => {
   // TODO: - showFilterModal (boolean)
   const [showFilterModal, setShowFilterModal] = useState(false);
 
+  // GET - Fetch all jobs from your backend on component mount
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Call your backend's GET /api/jobs endpoint
+        const response = await fetch(`${API_BASE_URL}/jobs`);
+        
+        // Check if response is successful
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        // Parse response - your backend returns {success: true, data: jobs}
+        const result = await response.json();
+        
+        // Extract jobs array from your backend's response structure
+        if (result.success && result.data) {
+          setJobs(result.data);
+        } else {
+          throw new Error('Invalid response format from server');
+        }
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+        setError('Failed to load jobs. Please try again.');
+        
+        // Fallback to sample data if backend is unavailable
+        setJobs([
+          {
+            id: 1,
+            company: 'Apple',
+            jobTitle: 'Software Developer',
+            status: 'Rejected',
+            applicationDate: '07/03/2025',
+            notes: 'Improve on OA coding skills and system design preparation'
+          },
+          {
+            id: 2,
+            company: 'Amazon',
+            jobTitle: 'Software Developer',
+            status: 'Applied',
+            applicationDate: '07/05/2025',
+            notes: 'Practice More Leetcode problems, especially dynamic programming'
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+    // dependency empty array so runs once on mount
+  }, []);
+
+  // CREATE - Add new job using your backend's POST /api/jobs endpoint
+  const createJob = async (newJob) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Call your backend's POST endpoint with required fields
+      const response = await fetch(`${API_BASE_URL}/jobs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          company: newJob.company,
+          jobTitle: newJob.jobTitle,
+          status: newJob.status,
+          notes: newJob.notes
+          // applicationDate and id will be generated by your backend
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      // Parse response - your backend returns {success: true, message: string, data: job}
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        // Update local state with the new job from backend
+        setJobs(prevJobs => [...prevJobs, result.data]);
+        return result.data;
+      } else {
+        throw new Error('Invalid response format from server');
+      }
+    } catch (error) {
+      console.error('Error creating job:', error);
+      setError(`Failed to create job: ${error.message}`);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // UPDATE - Update existing job using your backend's PATCH /api/jobs/:id endpoint
+  const updateJob = async (id, updatedFields) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Call your backend's PATCH endpoint with only the fields to update
+      const response = await fetch(`${API_BASE_URL}/jobs/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedFields)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      // Parse response - your backend returns {success: true, message: string, data: job}
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        // Update local state with the updated job
+        setJobs(prevJobs =>
+          prevJobs.map(job =>
+            job.id === id ? result.data : job
+          )
+        );
+        return result.data;
+      } else {
+        throw new Error('Invalid response format from server');
+      }
+    } catch (error) {
+      console.error('Error updating job:', error);
+      setError(`Failed to update job: ${error.message}`);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // DELETE - Remove job using your backend's DELETE /api/jobs/:id endpoint
+  const deleteJob = async (id) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Call your backend's DELETE endpoint
+      const response = await fetch(`${API_BASE_URL}/jobs/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      // Parse response - your backend returns {success: true, message: string}
+      const result = await response.json();
+      
+      if (result.success) {
+        // Update local state by removing the deleted job
+        setJobs(prevJobs => prevJobs.filter(job => job.id !== id));
+        return true;
+      } else {
+        throw new Error('Invalid response format from server');
+      }
+    } catch (error) {
+      console.error('Error deleting job:', error);
+      setError(`Failed to delete job: ${error.message}`);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // TODO: Create handler for opening notes modal
   // TODO: - Accept job object as parameter
   // TODO: - Set selectedJob to the clicked job
@@ -100,21 +242,17 @@ const App = () => {
   // TODO: - Accept jobId and newStatus as parameters
   // TODO: - Update the jobs array by finding job with matching id
   // TODO: - Change the status property to newStatus
-  // Updates the status of a specific job in the jobs array
+  // Updates the status of a specific job - now calls backend API instead of direct state manipulation
   // jobId: the id of the job to update
   // newStatus: the new status value to set
-  const handleStatusChange = (jobId, newStatus) => {
-    setJobs(prevJobs =>
-      // Loop through all jobs in the array
-      prevJobs.map(job =>
-        // If this job's id matches the one we want to update...
-        job.id === jobId
-          // ...create a new object with all the same properties(spread operator), but update status
-          ? { ...job, status: newStatus } // Only this job's status is changed
-          // Otherwise, return the job unchanged
-          : job
-      )
-    );
+  const handleStatusChange = async (jobId, newStatus) => {
+    try {
+      // Update only the status field using PATCH API call to your backend
+      await updateJob(jobId, { status: newStatus });
+    } catch (error) {
+      console.error('Error updating job status:', error);
+      // Error handling is already done in updateJob function
+    }
   };
 
   // TODO: Create handler for adding new job
@@ -124,19 +262,29 @@ const App = () => {
   // TODO: - Add newJob to jobs array
   // TODO: - Close the add job modal
 
+  // Handler for adding new job - now creates job in backend instead of local manipulation
+  // Accept newJob object as parameter
+  // Backend generates unique id and adds current date as applicationDate
+  // Add newJob to jobs array via API call and close the add job modal
+  const handleAddJobSubmit = async (newJob) => {
+    try {
+      // Create job in backend (backend will generate unique ID and applicationDate)
+      await createJob(newJob);
+      
+      // Close the modal after successful creation
+      setShowAddJobModal(false);
+    } catch (error) {
+      console.error('Error adding job:', error);
+      // Error state is already handled in createJob function
+    }
+  };
+
   // TODO: Create handler for updating filters
-  // TODO: - Accept filters array as parameter 
+  // TODO: - Accept filters array as parameter
   // TODO: - Update activeFilters state
   const handleFilterChange = (filters) => {
     setActiveFilters(filters);
   };
-
-
-  // TODO: Create handler for search functionality
-  // TODO: - Accept searchTerm string as parameter
-  // TODO: - Update searchTerm state
-  const [searchTerm, setSearchTerm] = useState('');
-
 
   // TODO: Create handler for filter click (opens filter modal)
   // TODO: - Set showFilterModal to true
@@ -145,13 +293,37 @@ const App = () => {
     setShowFilterModal(true);
   };
 
-
   // TODO: Create handler for opening add job modal
   // TODO: - Set showAddJobModal to true
   // TODO: - This is called when "Add Job" button is clicked
   const handleAddJobClick = () => {
     setShowAddJobModal(true);
   };
+
+  // TODO: Create handler for deleting jobs
+  // TODO: - Accept jobId as parameter
+  // TODO: - Remove job from jobs array
+  // TODO: - Show confirmation before deletion
+  // Handler for deleting jobs - calls backend API to delete job and updates local state
+  // jobId: the id of the job to delete
+  // Shows confirmation dialog before deletion for better UX
+  const handleDeleteJob = async (jobId) => {
+    // Show confirmation dialog before deleting
+    const confirmDelete = window.confirm('Are you sure you want to delete this job application? This action cannot be undone.');
+    
+    if (!confirmDelete) {
+      return; // User cancelled deletion
+    }
+
+    try {
+      // Call backend DELETE endpoint to remove job
+      await deleteJob(jobId);
+    } catch (error) {
+      console.error('Error deleting job:', error);
+      // Error handling is already done in deleteJob function
+    }
+  };
+
   // TODO: Create handler for closing modals
   // TODO: - Set all modal states to false (showNotesModal, showAddJobModal, showFilterModal)
   // TODO: - Reset selectedJob to null
@@ -162,15 +334,21 @@ const App = () => {
   // TODO: - Update the jobs array by finding job with matching id
   // TODO: - Update the notes property with newNotes
   // TODO: - Close the notes modal
-  const handleNotesSubmit = (jobId, newNotes) => { 
-    setJobs(prevJobs => 
-      prevJobs.map(job => 
-        // If this job's id matches the one we want to update...
-        // notes is updated with newNotes
-        job.id === jobId ? { ...job, notes: newNotes } : job
-      )
-    )
-    setShowNotesModal(false);
+  // Handler for notes submission - now updates backend instead of direct state manipulation
+  // Accept jobId and newNotes as parameters
+  // Update the job's notes via API call and close the notes modal
+  const handleNotesSubmit = async (jobId, newNotes) => {
+    try {
+      // Update only the notes field using PATCH API call to your backend
+      await updateJob(jobId, { notes: newNotes });
+      
+      // Close the notes modal after successful update
+      setShowNotesModal(false);
+      setSelectedJob(null);
+    } catch (error) {
+      console.error('Error updating job notes:', error);
+      // Error handling is already done in updateJob function
+    }
   };
 
   // TODO: Create filtering logic for jobs display
@@ -179,16 +357,23 @@ const App = () => {
   const filteredJobs = jobs.filter(job => {
     // Filter by search term
     const matchesSearch = job.company.toLowerCase().includes(searchTerm.toLowerCase());
-    
+   
     // Filter by active filters
     const matchesFilter = activeFilters.includes(job.status);
-    
+   
     // Return true if both conditions are met
     return matchesSearch && matchesFilter;
   });
   // TODO: - Return filtered array to pass to JobTable
 
-
+  // Show loading spinner while fetching data from backend
+  if (loading && jobs.length === 0) {
+    return (
+      <div className="app" style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <div>Loading jobs...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="app">
@@ -196,9 +381,9 @@ const App = () => {
         // TODO: Pass filter click handler as prop
         onFilterClick={handleClickFilterClick}
       />
-      
+     
       <div className="main-content">
-        <Header 
+        <Header
           // TODO: Pass searchTerm state as prop (note the difference in prop name and state name)
           searchTerm={searchTerm}
           // TODO: Pass search change handler as prop (note change depending on paramter for setSearchTerm depding on value change in child component)
@@ -206,14 +391,42 @@ const App = () => {
           // TODO: Pass add job click handler as prop
           onAddJobClick={handleAddJobClick}
         />
-        
-        <JobTable 
+
+        {/* Display error message if there's an API error */}
+        {error && (
+          <div style={{ 
+            background: '#ff4757', 
+            color: 'white', 
+            padding: '10px', 
+            margin: '10px',
+            borderRadius: '5px' 
+          }}>
+            {error}
+            <button 
+              onClick={() => setError(null)}
+              style={{ 
+                marginLeft: '10px', 
+                background: 'transparent', 
+                border: '1px solid white', 
+                color: 'white',
+                borderRadius: '3px',
+                cursor: 'pointer'
+              }}
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+       
+        <JobTable
           // TODO: Replace with your filtered jobs array
           jobs={filteredJobs}
           // TODO: Pass status change handler as prop
           onStatusChange={handleStatusChange}
           // TODO: Pass notes click handler as prop
           onNotesClick={handleNotesClick}
+          // TODO: Pass delete job handler as prop
+          onDeleteJob={handleDeleteJob}
         />
       </div>
 
@@ -222,7 +435,10 @@ const App = () => {
       {showNotesModal && selectedJob && (
         <NotesModal
           job={selectedJob}
-          onClose={() => setShowNotesModal(false)}
+          onClose={() => {
+            setShowNotesModal(false);
+            setSelectedJob(null);
+          }}
           onSubmit={handleNotesSubmit}
         />
       )}
@@ -232,19 +448,9 @@ const App = () => {
       {showAddJobModal && (
         <AddJobModal
           onClose={() => setShowAddJobModal(false)}
-          onSubmit={(newJob) => {
-            // Generate a new unique id for the job
-            const newJobWithId = {
-              ...newJob,
-              id: jobs.length + 1, // Simple id generation based on current length
-              applicationDate: new Date().toLocaleDateString('en-US') // Current date in MM/DD/YYYY format
-            };
-            setJobs([...jobs, newJobWithId]); // Add the new job to the jobs array
-            setShowAddJobModal(false); // Close the modal after adding
-          }}
-        
+          onSubmit={handleAddJobSubmit}
         />
-      )} 
+      )}
 
       {/* TODO: Conditionally render FilterModal when showFilterModal is true */}
       {/* TODO: Pass activeFilters, close handler, and filters change handler as props */}
